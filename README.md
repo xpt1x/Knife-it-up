@@ -1,4 +1,4 @@
-# Knife It UP [![Download](https://img.shields.io/badge/Knife%20It%20Up-3.0.4-brightgreen.svg)](https://github.com/xpt1x/Knife-it-up/archive/master.zip)
+# KNIFE IT UP [![Download](https://img.shields.io/badge/Knife%20It%20Up-3.0.4-brightgreen.svg)](https://github.com/xpt1x/Knife-it-up/archive/master.zip)
 
 ### DESCRIPTION
 This is a simple Bonus like plugin which gives Bonus HP, Frags, Speed and Glow to the attacker additionally it plays KNIFE SOUND for all players present on server and shows a Random Colored Hud Message who knife whom ( Just for Fun and to know that someone has knifed a player ) Speed and Glow are for a specific time and can be decided by cvars
