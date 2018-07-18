@@ -7,7 +7,8 @@
 	#define client_disconnected client_disconnect
 #endif
 
-#define VERSION "3.0.5"
+#define PLUGIN "Knife It Up"
+#define VERSION "3.0.6"
 #define MAXSOUNDS 30
 
 new songlist[MAXSOUNDS][64]
@@ -21,7 +22,7 @@ new szprefix[32], hudObj, szDir[64]
 
 public plugin_init() 
 {    
-    register_plugin("Knife It UP", VERSION, "DiGiTaL")  
+    register_plugin(PLUGIN, VERSION, "DiGiTaL")  
     register_cvar("cskk_version", VERSION, FCVAR_SERVER)
     
     csi_kkb_prefix = register_cvar ("csi_kkb_prefix", "Knife")
@@ -47,6 +48,11 @@ public plugin_precache()
 {
 	csi_kkb_dir = register_cvar("csi_kkb_dir", "sound/knife")
 	get_pcvar_string(csi_kkb_dir, szDir, charsmax(szDir))
+	
+	if(!dir_exists(szDir, false)) {
+		mkdir(szDir)
+		set_fail_state("Sounds Directory ^"%s^" not Found. Creating Directory [ %s ]", szDir, szDir)	
+	}
 
 	new songsfile, namefull[64], allsongs[64], nameext[32]
 	songsfile = open_dir(szDir, namefull, 63)
@@ -59,6 +65,9 @@ public plugin_precache()
 	}
 	while(songcount < MAXSOUNDS && next_file(songsfile, namefull, 63))
 	close_dir(songsfile)
+
+	if(songcount == 0) set_fail_state("No MP3 Files Found. Please check files in Directory [ %s ]", szDir)
+
 	for(new i=0;i<songcount;i++){
 		format(allsongs, 63, "%s/%s.mp3", szDir, songlist[i])
 		precache_generic(allsongs)
