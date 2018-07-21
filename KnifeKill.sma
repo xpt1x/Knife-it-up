@@ -1,6 +1,7 @@
 /* A Plugin from http://www.csindia.tech */
 #include <amxmodx>
 #include <fun>
+#include <soundinfo>
 #include <hamsandwich>
 #if AMXX_VERSION_NUM < 183
 	#include <colorchat>
@@ -8,7 +9,7 @@
 #endif
 
 #define PLUGIN "Knife It Up"
-#define VERSION "3.0.6"
+#define VERSION "3.0.7"
 #define MAXSOUNDS 30
 
 new songlist[MAXSOUNDS][64]
@@ -17,8 +18,8 @@ new songcount = 0
 new bool:g_bHasSpeed[33];
 new bool:b_sound[33]
 new csi_kkb_hp, csi_kkb_frag, csi_kkb_prefix, csi_kkb_glow;
-new csi_kkb_speed, csi_kkb_speed_time, csi_kkb_hud , csi_kkb_dir
-new szprefix[32], hudObj, szDir[64]
+new csi_kkb_speed, csi_kkb_speed_time, csi_kkb_hud , csi_kkb_dir, csi_kkb_type
+new szprefix[32], hudObj, szDir[64], x = 0
 
 public plugin_init() 
 {    
@@ -26,6 +27,7 @@ public plugin_init()
     register_cvar("cskk_version", VERSION, FCVAR_SERVER)
     
     csi_kkb_prefix = register_cvar ("csi_kkb_prefix", "Knife")
+    csi_kkb_type = register_cvar("csi_kkb_type", "1")
     csi_kkb_speed = register_cvar ("csi_kkb_speed","550.0");
     csi_kkb_speed_time = register_cvar ("csi_kkb_speed_time","8.0");
     csi_kkb_hp = register_cvar ("csi_kkb_hp","15");
@@ -93,12 +95,31 @@ public onDeathMsgEvent()
 		new gHP = get_pcvar_num(csi_kkb_hp)
 		new gFrag = get_pcvar_num(csi_kkb_frag)
 
-		r = random_num(0,songcount-1)		
-
-		get_players(players, num)
-		for(new i; i < num; i++) {
-			iPlayer = players[i]
-			if(b_sound[iPlayer]) client_cmd(iPlayer, "mp3 play %s/%s", szDir, songlist[r])
+		switch(get_pcvar_num(csi_kkb_type)) 
+		{
+			case 1: 
+			{
+				r = random_num(0,songcount-1)		
+				get_players(players, num)
+				for(new i; i < num; i++) 
+				{
+					iPlayer = players[i]
+					if(b_sound[iPlayer]) client_cmd(iPlayer, "mp3 play %s/%s", szDir, songlist[r])					 
+				}
+			}
+			case 2: 
+			{
+				get_players(players, num)
+				for(new i; i < num; i++) 
+				{
+					iPlayer = players[i]
+					if(b_sound[iPlayer]) 
+					{
+						if(x == songcount) x = 0
+						client_cmd(iPlayer, "mp3 play %s/%s", szDir, songlist[x++]); 
+					}
+				}
+			}
 		}
 		
 		set_user_health(id, clamp(get_user_health( id ) + gHP, 1, 100))
