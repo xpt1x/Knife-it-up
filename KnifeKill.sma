@@ -1,7 +1,6 @@
 /* A Plugin from http://www.csindia.tech */
 #include <amxmodx>
 #include <fun>
-#include <soundinfo>
 #include <hamsandwich>
 #if AMXX_VERSION_NUM < 183
 	#include <colorchat>
@@ -51,9 +50,11 @@ public plugin_precache()
 	csi_kkb_dir = register_cvar("csi_kkb_dir", "sound/knife")
 	get_pcvar_string(csi_kkb_dir, szDir, charsmax(szDir))
 	
-	if(!dir_exists(szDir, false)) {
+	if(!dir_exists(szDir)) {
 		mkdir(szDir)
-		set_fail_state("Sounds Directory ^"%s^" not Found. Creating Directory [ %s ]", szDir, szDir)	
+		new szFail[128]
+		formatex(szFail, charsmax(szFail), "Sounds Directory ^"%s^" not Found. Creating Directory [ %s ]", szDir, szDir)
+		set_fail_state(szFail)	
 	}
 
 	new songsfile, namefull[64], allsongs[64], nameext[32]
@@ -68,7 +69,11 @@ public plugin_precache()
 	while(songcount < MAXSOUNDS && next_file(songsfile, namefull, 63))
 	close_dir(songsfile)
 
-	if(songcount == 0) set_fail_state("No MP3 Files Found. Please check files in Directory [ %s ]", szDir)
+	if(songcount == 0) {
+		new szFail[128]
+		formatex(szFail, charsmax(szFail), "No MP3 Files Found. Please check files in Directory [ %s ]", szDir)
+		set_fail_state(szFail)
+	}
 
 	for(new i=0;i<songcount;i++){
 		format(allsongs, 63, "%s/%s.mp3", szDir, songlist[i])
@@ -116,7 +121,7 @@ public onDeathMsgEvent()
 					if(b_sound[iPlayer]) 
 					{
 						if(x == songcount) x = 0
-						client_cmd(iPlayer, "mp3 play %s/%s", szDir, songlist[x++]); 
+						client_cmd(iPlayer, "mp3 play %s/%s", szDir, songlist[x++]);
 					}
 				}
 			}
